@@ -2,3 +2,10 @@
 .p-toast-detail {
   color: #776767 !important;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and border in height/width calculations */
+  position: relative;
+}
