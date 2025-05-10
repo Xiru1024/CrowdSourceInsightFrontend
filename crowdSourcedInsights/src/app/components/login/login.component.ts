@@ -28,18 +28,18 @@ export class LoginComponent {
   }
   
 public onSubmit() {
-  this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Save failed' });
-  return;
+
  if (this.loginForm.valid) {
     console.log(this.loginForm.value);
     this.http.createUser(this.loginForm.value).subscribe({
         next: (response) => {
           console.log(response);
-          this.messageService.add({ severity: 'success', summary: 'Done', detail: 'Saved successfully' });
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
         },
         error: (error) => {
           console.error('Error registering user:', error);
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Save failed' });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Save failed'});
+
         }
     })
 
