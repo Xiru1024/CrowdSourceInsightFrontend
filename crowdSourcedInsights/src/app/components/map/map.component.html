@@ -1,7 +1,7 @@
 <div class="container-fluid map-container">
   <div class="h-100 d-flex">
-    <div class="side-bar ">
-        <span class="pi pi-bars" (click)="toggleDrawer()"></span>
+    <div class="side-bar">
+      <span class="pi pi-bars" (click)="toggleDrawer()"></span>
     </div>
 
     <p-drawer [(visible)]="sidePananelVisible" header="Drawer">
@@ -14,5 +14,10 @@
     </p-drawer>
 
     <div class="col map" #map></div>
+    <div #contextMenu class="context-menu" (mouseleave)="hideContextMenu()">
+      <ul>
+        <li (click)="onMenuItemClick('Option 1')">Add insight here</li>
+      </ul>
+    </div>
   </div>
 </div>
