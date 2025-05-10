@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpService } from '../../services/httpService';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private http: HttpService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.loginForm =  this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -37,6 +39,7 @@ public onSubmit() {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
 
            localStorage.setItem('api_key', response.body.api_key);
+           this.router.navigate(['/map']);
 
         },
         error: (error) => {
