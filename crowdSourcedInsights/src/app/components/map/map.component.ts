@@ -1,13 +1,16 @@
 import { Component,  ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { DrawerModule } from 'primeng/drawer';
 import { Browser, Map, map, tileLayer } from 'leaflet';
 
 @Component({
   selector: 'app-map',
-  imports: [],
+  imports: [DrawerModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss'
 })
 export class MapComponent implements OnInit, AfterViewInit {
+public sidePananelVisible: boolean = false;
+
   @ViewChild('map')
   private mapContainer!: ElementRef<HTMLElement>;
 
@@ -33,5 +36,9 @@ export class MapComponent implements OnInit, AfterViewInit {
       maxZoom: 20,
       id: 'osm-bright',
     } as any).addTo(lefletMap);
+  }
+
+    toggleDrawer() {
+    this.sidePananelVisible = !this.sidePananelVisible; // Toggle the drawer visibility
   }
 }

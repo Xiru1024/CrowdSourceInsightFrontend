@@ -1,2 +1,18 @@
-map work
-<div class="map-container" #map></div>
+<div class="container-fluid map-container">
+  <div class="h-100 d-flex">
+    <div class="side-bar ">
+        <span class="pi pi-bars" (click)="toggleDrawer()"></span>
+    </div>
+
+    <p-drawer [(visible)]="sidePananelVisible" header="Drawer">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat.
+      </p>
+    </p-drawer>
+
+    <div class="col map" #map></div>
+  </div>
+</div>
