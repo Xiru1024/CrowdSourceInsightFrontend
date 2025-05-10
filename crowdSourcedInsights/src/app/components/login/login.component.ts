@@ -33,8 +33,11 @@ public onSubmit() {
     console.log(this.loginForm.value);
     this.http.createUser(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log(response);
+          console.log("response: ",response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
+
+           localStorage.setItem('api_key', response.body.api_key);
+
         },
         error: (error) => {
           console.error('Error registering user:', error);
@@ -48,5 +51,6 @@ public onSubmit() {
    this.loginForm.markAllAsTouched()
   }
 }
+
 
 }
