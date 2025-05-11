@@ -28,7 +28,6 @@ export class InsightDetailComponent implements OnInit {
       (response) => {
         this.insight = response.body;
         console.log(this.insight);
-        this.rating = this.insight.rating;
       },
       (error) => {
         this.messageService.add({

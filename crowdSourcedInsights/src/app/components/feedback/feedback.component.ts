@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { FeedbackpopUpComponent } from '../feedbackpop-up/feedbackpop-up.component';
@@ -9,7 +9,14 @@ import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-feedback',
-  imports: [CardModule, FormsModule, ButtonModule, FeedbackpopUpComponent, CommonModule, RatingModule],
+  imports: [
+    CardModule,
+    FormsModule,
+    ButtonModule,
+    FeedbackpopUpComponent,
+    CommonModule,
+    RatingModule,
+  ],
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.scss',
 })
@@ -20,6 +27,8 @@ export class FeedbackComponent {
   public isEdit: boolean = false;
   public currentFeedback: any = null;
   @Input() insight: any = null;
+  @Output() updateAverageRating: EventEmitter<number> =
+    new EventEmitter<number>();
   constructor(
     private http: HttpService,
     private messageService: MessageService
@@ -28,10 +37,13 @@ export class FeedbackComponent {
   ngOnInit() {
     this.http.fetchFeedbacks(this.insight.user, this.insight.id).subscribe({
       next: (response) => {
-         this.feedbacks = (response.body.items || []).sort(
-        (a: any, b: any) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
-      );
-        console.log("feedbacks",this.feedbacks);
+        this.feedbacks = (response.body.items || []).sort(
+          (a: any, b: any) =>
+            new Date(b.created_date).getTime() -
+            new Date(a.created_date).getTime()
+        );
+        this.calculateAverageRating(this.feedbacks);
+        console.log('feedbacks', this.feedbacks);
       },
       error: (error) => {
         this.messageService.add({
@@ -50,12 +62,15 @@ export class FeedbackComponent {
 
   public closePopup(needUpdateList: boolean) {
     this.currentFeedback = null;
-    if(needUpdateList) {
-      this.http.fetchFeedbacks(this.insight.user ,this.insight.id).subscribe({
+    if (needUpdateList) {
+      this.http.fetchFeedbacks(this.insight.user, this.insight.id).subscribe({
         next: (response) => {
           this.feedbacks = (response.body.items || []).sort(
-            (a: any, b: any) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
+            (a: any, b: any) =>
+              new Date(b.created_date).getTime() -
+              new Date(a.created_date).getTime()
           );
+          this.calculateAverageRating(this.feedbacks);
         },
         error: (error) => {
           this.messageService.add({
@@ -69,7 +84,6 @@ export class FeedbackComponent {
     this.isPopupVisible = false;
   }
 
-  
   editFeedback(fb: any) {
     this.currentFeedback = fb;
     this.isPopupVisible = true;
@@ -78,14 +92,17 @@ export class FeedbackComponent {
   }
 
   deleteFeedback(fb: any) {
-    this.http.deleteFeedback(fb.user,fb.insight,fb.id).subscribe({
+    this.http.deleteFeedback(fb.user, fb.insight, fb.id).subscribe({
       next: (response) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Feedback deleted successfully',
         });
-        this.feedbacks = this.feedbacks.filter((feedback) => feedback.id !== fb.id);
+        this.feedbacks = this.feedbacks.filter(
+          (feedback) => feedback.id !== fb.id
+        );
+        this.calculateAverageRating(this.feedbacks);
       },
       error: (error) => {
         this.messageService.add({
@@ -97,5 +114,12 @@ export class FeedbackComponent {
     });
   }
 
-
+  public calculateAverageRating(feedbacks: any[]) {
+    if (feedbacks.length === 0) return;
+    const totalRating = feedbacks.reduce(
+      (sum, feedback) => sum + feedback.rating,
+      0
+    );
+    this.updateAverageRating.emit(totalRating / feedbacks.length);
+  }
 }

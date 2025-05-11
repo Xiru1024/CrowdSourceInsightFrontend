@@ -60,7 +60,7 @@
   <p-accordion-panel value="2">
     <p-accordion-header>Review</p-accordion-header>
     <p-accordion-content>
-      <app-feedback [insight]="insight"></app-feedback>
+      <app-feedback [insight]="insight" (updateAverageRating)="rating=$event"></app-feedback>
     </p-accordion-content>
   </p-accordion-panel>
 </p-accordion>
