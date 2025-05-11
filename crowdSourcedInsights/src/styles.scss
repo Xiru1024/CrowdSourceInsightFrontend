@@ -19,3 +19,46 @@ html, body {
 .p-dialog-content {
   color: #000000 !important;
 }
+.p-drawer {
+  background: #ffffff !important;
+  color: #000000 !important;
+  .p-drawer-header {
+        padding: .5em!important;
+        font-size: medium!important;
+  }
+}
+.p-accordionheader {
+ padding: .5em!important;
+ font-size: small!important;
+}
+
+/* ...existing code... */
+
+// Thin scrollbar for Webkit browsers (Chrome, Edge, Safari)
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd #f5f5f5;
+}
+
+.p-drawer-content {
+  padding: 0em 1em 1em 1em !important;
+}
+.p-accordioncontent-content {
+    padding: 0.5em!important; 
+    font-size: 12px!important;
+}

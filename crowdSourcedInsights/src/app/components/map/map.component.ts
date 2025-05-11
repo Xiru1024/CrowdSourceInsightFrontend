@@ -13,11 +13,11 @@ import { InsightCreationPopComponent } from '../insight-creation-pop/insight-cre
 import { CommonModule } from '@angular/common';
 import { HttpService } from '../../services/httpService';
 import { MessageService } from 'primeng/api';
-import { min } from 'rxjs';
+import { InsightDetailComponent } from '../insight-detail/insight-detail.component';
 
 @Component({
   selector: 'app-map',
-  imports: [DrawerModule, InsightCreationPopComponent, CommonModule],
+  imports: [DrawerModule, InsightCreationPopComponent, CommonModule, InsightDetailComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
@@ -35,6 +35,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   public lat_long: any = {};
   public mapBounds: any = {};
   public customIcon: any;
+  public currentInsight: any = null;
 
   constructor(
     private renderer: Renderer2,
@@ -82,7 +83,9 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.getMapBounds();
       this.getAllInsights();
     });
+
     this.getMapBounds();
+    this.getAllInsights();
   }
 
   toggleDrawer() {
@@ -195,10 +198,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   showInsightDetail(insight: any) {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Insight Detail',
-      detail: `Title: ${insight.title}, Description: ${insight.description}`,
-    });
+    this.currentInsight = insight;
+    this.sidePananelVisible = true;
   }
 }

@@ -51,4 +51,12 @@ export class HttpService {
     responseType: 'json'
   });
   }
+
+  getInsightDetail(insightId: string): Observable<any> {
+    return this.http.get(this.baseUrl + '/insights/' + insightId, {
+      headers: this.headers,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
 }

@@ -4,13 +4,29 @@
       <span class="pi pi-bars" (click)="toggleDrawer()"></span>
     </div>
 
-    <p-drawer [(visible)]="sidePananelVisible" header="Drawer">
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.
-      </p>
+    <p-drawer
+      [(visible)]="sidePananelVisible"
+      (onHide)="currentInsight = null"
+      [style]="{ width: '400px' }"
+    >
+      <ng-template #header>
+        <div *ngIf="currentInsight" class="d-flex justify-content-between w-100">
+          <div class="font-bold ">{{ currentInsight?.title }}</div>
+          <div class="action-group">
+              <div class="pi pi-pen-to-square"></div>
+              <div class="pi pi-trash"></div>
+          </div>
+        
+        </div>
+        <div *ngIf="!currentInsight">
+          please select an insight to view details
+
+        </div>
+      </ng-template>
+      <app-insight-detail
+        *ngIf="currentInsight"
+        [insight]="currentInsight"
+      ></app-insight-detail>
     </p-drawer>
 
     <div class="col map" #map></div>
@@ -22,4 +38,8 @@
   </div>
 </div>
 
- <app-insight-creation-pop *ngIf="dialogVisible" [lat_long]="lat_long" (onClose)="handleClosePopup($event)"></app-insight-creation-pop>
+<app-insight-creation-pop
+  *ngIf="dialogVisible"
+  [lat_long]="lat_long"
+  (onClose)="handleClosePopup($event)"
+></app-insight-creation-pop>
