@@ -1,0 +1,18 @@
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; 
+  margin-top: auto; 
+  padding-top: 10px; 
+  border-top: 1px solid #ddd; 
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.text-danger {
+  color: red;
+  font-size: 0.875rem;
+}

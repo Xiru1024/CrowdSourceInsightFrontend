@@ -39,6 +39,7 @@ public onSubmit() {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
 
            localStorage.setItem('api_key', response.body.api_key);
+           localStorage.setItem('username', this.loginForm.get('username')?.value);
            this.router.navigate(['/map']);
 
         },

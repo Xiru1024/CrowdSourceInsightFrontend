@@ -21,3 +21,5 @@
     </div>
   </div>
 </div>
+
+ <app-insight-creation-pop *ngIf="dialogVisible" [lat_long]="lat_long" (onClose)="handleClosePopup($event)"></app-insight-creation-pop>

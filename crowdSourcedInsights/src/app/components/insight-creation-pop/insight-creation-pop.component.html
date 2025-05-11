@@ -1,0 +1,128 @@
+<p-dialog
+  [visible]="true"
+  header="Create Insight"
+  [modal]="true"
+  [closable]="false"
+  (onHide)="hideDialog()"
+  [style]="{ width: '500px' }"
+>
+  <form [formGroup]="insightForm">
+    <div class="dialog-content">
+      <!-- Title (Required) -->
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input
+          id="title"
+          type="text"
+          class="form-control"
+          formControlName="title"
+          placeholder="Enter title"
+        />
+        <div *ngIf="insightForm.get('title')?.invalid && insightForm.get('title')?.touched" class="text-danger">
+          Title is required.
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input
+          id="address"
+          type="text"
+          class="form-control"
+          formControlName="address"
+          placeholder="Enter address"
+        />
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input
+          id="category"
+          type="text"
+          class="form-control"
+          formControlName="category"
+          placeholder="Enter category"
+        />
+      </div>
+
+      <!-- Subcategory -->
+      <div class="form-group">
+        <label for="subcategory">Subcategory</label>
+        <input
+          id="subcategory"
+          type="text"
+          class="form-control"
+          formControlName="subcategory"
+          placeholder="Enter subcategory"
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          class="form-control"
+          formControlName="description"
+          placeholder="Enter description"
+        ></textarea>
+      </div>
+
+      <!-- External Link -->
+      <div class="form-group">
+        <label for="external_link">External Link</label>
+        <input
+          id="external_link"
+          type="url"
+          class="form-control"
+          formControlName="external_link"
+          placeholder="Enter external link"
+        />
+      </div>
+
+      <!-- Image -->
+      <div class="form-group">
+        <label for="image">Image URL</label>
+        <input
+          id="image"
+          type="url"
+          class="form-control"
+          formControlName="image"
+          placeholder="Enter image URL"
+        />
+      </div>
+
+      <!-- Latitude (Read-only) -->
+      <div class="form-group">
+        <label for="latitude">Latitude *</label>
+        <input
+          id="latitude"
+          type="text"
+          class="form-control"
+          formControlName="latitude"
+          readonly
+        />
+      </div>
+
+      <!-- Longitude (Read-only) -->
+      <div class="form-group">
+        <label for="longitude">Longitude *</label>
+        <input
+          id="longitude"
+          type="text"
+          class="form-control"
+          formControlName="longitude"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Buttons container -->
+    <div class="dialog-footer">
+      <button type="submit" class="btn btn-primary" (click)="saveInsight()">Save</button>
+      <button type="button" class="btn btn-secondary" (click)="hideDialog()">Cancel</button>
+    </div>
+  </form>
+</p-dialog>
