@@ -1,3 +1,23 @@
+/**
+ * FeedbackComponent
+ * -----------------
+ * This component manages the display, creation, editing, and deletion of feedback for a given insight.
+ * 
+ * Main Functions:
+ * - Fetches and displays a list of feedback for a specific insight.
+ * - Allows users to add, edit, or delete feedback.
+ * - Calculates and emits the average rating for the feedback list.
+ * - Handles feedback pop-up visibility and state.
+ * 
+ * Public Inputs:
+ * - @Input() insight: IInsight | null
+ *   The insight object for which feedback is being managed.
+ * 
+ * Public Outputs:
+ * - @Output() updateAverageRating: EventEmitter<number>
+ *   Emits the updated average rating whenever the feedback list changes.
+ */
+
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';

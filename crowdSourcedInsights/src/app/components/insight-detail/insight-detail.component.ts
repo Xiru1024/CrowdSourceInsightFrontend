@@ -8,6 +8,20 @@ import { FormsModule } from '@angular/forms';
 import { FeedbackComponent } from '../feedback/feedback.component';
 import { IInsight } from '../../models/models';
 
+/**
+ * InsightDetailComponent
+ * ----------------------
+ * This component displays detailed information about a specific insight, including its feedback and rating.
+ * 
+ * Main Functions:
+ * - Fetches and displays detailed data for a given insight.
+ * - Shows feedback and allows rating display for the insight.
+ * 
+ * Public Inputs:
+ * - @Input() insight: IInsight | null
+ *   The insight object whose details are to be displayed.
+ */
+
 @Component({
   selector: 'app-insight-detail',
   imports: [CommonModule, AccordionModule, RatingModule, FormsModule, FeedbackComponent],

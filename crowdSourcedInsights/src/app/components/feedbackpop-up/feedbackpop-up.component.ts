@@ -12,6 +12,29 @@ import { MessageService } from 'primeng/api';
 import { RatingModule } from 'primeng/rating';
 import { IFeedback, IInsight } from '../../models/models';
 
+/**
+ * FeedbackpopUpComponent
+ * ----------------------
+ * This component provides a dialog for users to submit or edit feedback for a specific insight.
+ * 
+ * Main Functions:
+ * - Displays a form for feedback submission or editing.
+ * - Handles form validation and submission to the backend.
+ * - Emits events to close the dialog and notify parent components of changes.
+ * 
+ * Public Inputs:
+ * - @Input() insight: IInsight | null
+ *   The insight for which feedback is being provided.
+ * - @Input() currentFeedback: IFeedback | null
+ *   The feedback object to edit (if in edit mode).
+ * - @Input() isEdit: boolean
+ *   Flag to indicate if the dialog is in edit mode.
+ * 
+ * Public Outputs:
+ * - @Output() closeFeedback: EventEmitter<boolean>
+ *   Emits when the dialog is closed, with a boolean indicating if feedback was created/updated.
+ */
+
 @Component({
   selector: 'app-feedbackpop-up',
   imports: [CommonModule, DialogModule, ReactiveFormsModule, RatingModule],

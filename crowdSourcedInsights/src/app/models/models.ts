@@ -1,3 +1,15 @@
+/**
+ * models.ts
+ * ---------
+ * This file defines TypeScript interfaces for the application's core data models.
+ * 
+ * Interfaces:
+ * - IUser: Represents a user with optional id, email, and password.
+ * - IInsight: Represents an insight with metadata such as title, description, location, and categorization.
+ * - IFeedback: Represents feedback for an insight, including rating, comment, and creation date.
+ * - IGeneral: Generic key-value interface for flexible data structures.
+ */
+
 export interface IUser {
   id?: string;
   email?: string;

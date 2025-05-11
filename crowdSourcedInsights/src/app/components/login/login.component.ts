@@ -1,3 +1,14 @@
+/**
+ * LoginComponent
+ * --------------
+ * This component provides a user registration and login form.
+ * 
+ * Main Functions:
+ * - Displays a form for user registration/login.
+ * - Validates user input and submits registration data to the backend.
+ * - Handles success and error responses, storing credentials and navigating to the map on success.
+ */
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpService } from '../../services/httpService';

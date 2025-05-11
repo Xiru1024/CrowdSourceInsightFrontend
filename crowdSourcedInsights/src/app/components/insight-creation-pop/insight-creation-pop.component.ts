@@ -38,7 +38,7 @@ export class InsightCreationPopComponent implements OnInit {
   ngOnInit() {
     // Initialize the form with default values
     this.insightForm = this.fb.group({
-      title: ['', Validators.required], // Required field
+      title: ['', Validators.required],
       address: [''],
       category: [''],
       subcategory: [''],

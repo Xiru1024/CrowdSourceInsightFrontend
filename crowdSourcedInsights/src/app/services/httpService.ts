@@ -4,6 +4,19 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 import { Observable } from 'rxjs';
 import { IFeedback, IGeneral, IInsight, IUser } from '../models/models';
 
+/**
+ * HttpService
+ * -----------
+ * This Angular service provides HTTP methods for interacting with the backend API.
+ * 
+ * Main Functions:
+ * - User management: create users.
+ * - Insight management: create, update, fetch, and delete insights.
+ * - Feedback management: add, update, fetch, and delete feedback for insights.
+ * - Handles HTTP headers, authentication tokens, and response types.
+ * 
+ */
+
 @Injectable({ providedIn: 'root' })
 export class HttpService {
   private baseUrl = 'http://195.148.31.118/api';

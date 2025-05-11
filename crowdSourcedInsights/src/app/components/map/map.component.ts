@@ -1,3 +1,16 @@
+/**
+ * MapComponent
+ * ------------
+ * This component displays an interactive Leaflet map with insight markers and context menu actions.
+ * 
+ * Main Functions:
+ * - Initializes and displays a Leaflet map.
+ * - Fetches and displays insights as markers on the map.
+ * - Handles context menu for adding new insights at a location.
+ * - Allows viewing, editing, and deleting insight details via a side panel.
+ * 
+ */
+
 import {
   Component,
   ViewChild,
@@ -59,6 +72,8 @@ export class MapComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const initialState = { lng: 11, lat: 49, zoom: 4 };
+
+    // Initialize the map, refered to this source: https://www.geoapify.com/tutorial/angular-leaflet-mapbox-maplibre-openlayers/#angular-leaflet
 
     this.leafletMap = map(this.mapContainer.nativeElement).setView(
       [initialState.lat, initialState.lng],
