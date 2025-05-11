@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { AccordionModule } from 'primeng/accordion';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
+import { FeedbackComponent } from '../feedback/feedback.component';
 
 @Component({
   selector: 'app-insight-detail',
-  imports: [CommonModule, AccordionModule, RatingModule, FormsModule],
+  imports: [CommonModule, AccordionModule, RatingModule, FormsModule, FeedbackComponent],
   templateUrl: './insight-detail.component.html',
   styleUrl: './insight-detail.component.scss',
 })

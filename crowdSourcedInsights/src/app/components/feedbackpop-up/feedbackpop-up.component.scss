@@ -1,0 +1,10 @@
+::ng-deep {
+    .feedback-dialog {
+        .p-dialog {
+            position: fixed;
+            top: 20vh !important;
+            left: 40vw !important;
+        }
+
+    }
+}

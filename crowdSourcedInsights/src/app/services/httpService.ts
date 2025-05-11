@@ -86,4 +86,32 @@ export class HttpService {
       responseType: 'json'
     });
   }
+
+  addFeedback(insightId: string, userId: string,  feedbackData: any): Observable<any> {
+
+    const header = new HttpHeaders({
+      'Accept': 'application/vnd.mason+json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+    });
+    return this.http.post(this.baseUrl + '/users/' + userId + '/insights/' + insightId + '/feedbacks/', feedbackData, {
+      headers: header,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+
+
+  fetchFeedbacks(creatorId: string, insightId: string): Observable<any> {
+    const header = new HttpHeaders({
+      'Accept': 'application/vnd.mason+json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+    });
+    return this.http.get(this.baseUrl +'/users/' + creatorId + '/insights/' + insightId + '/feedbacks/', {
+      headers: header,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
 }

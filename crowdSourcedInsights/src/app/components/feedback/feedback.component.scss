@@ -1,0 +1,23 @@
+.add-review {
+    ::ng-deep  {
+        .p-button {
+            border: 1px solid #c7c7c7;
+        }
+        .p-button-outlined {
+            color: #0b57d0 !important;
+        }
+
+        .p-button-outlined:hover {
+            color: #0b57d0 !important;
+            background-color: rgba(26, 115, 232, 0.08);
+
+        }
+    }
+
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-style: italic;
+    font-weight: lighter;
+}

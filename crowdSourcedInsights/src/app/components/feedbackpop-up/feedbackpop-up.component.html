@@ -1,0 +1,40 @@
+<p-dialog
+  class="feedback-dialog"
+  [visible]="true"
+  header="Create Feedback"
+  [modal]="true"
+  [closable]="false"
+  (onHide)="hideDialog()"
+  [style]="{ width: '500px' }"
+>
+  <form [formGroup]="feedbackForm">
+    <div class="mb-3">
+      <label class="form-label">Rating</label>
+      <p-rating formControlName="rating"></p-rating>
+    </div>
+    <div class="mb-3">
+      <label for="comment" class="form-label">Your Feedback</label>
+      <textarea
+        id="comment"
+        rows="4"
+        class="form-control"
+        formControlName="comment"
+        placeholder="Enter your feedback"
+      ></textarea>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary" (click)="hideDialog()">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="feedbackForm.invalid"
+        (click)="saveFeedback()"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</p-dialog>
