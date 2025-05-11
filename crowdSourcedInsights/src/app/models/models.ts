@@ -16,7 +16,7 @@ export interface IInsight {
   subcategory?: string;
   latitude?: number;
   longitude?: number;
-  created_at?: string;
+  created_date?: string;
 }
 
 export interface IFeedback {

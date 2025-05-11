@@ -1,6 +1,6 @@
 
 
-<p-accordion [value]="['0', '1', '2']" [multiple]="true">
+<p-accordion *ngIf="insight" [value]="['0', '1', '2']" [multiple]="true">
   <p-accordion-panel value="0">
     <p-accordion-header>Description</p-accordion-header>
 

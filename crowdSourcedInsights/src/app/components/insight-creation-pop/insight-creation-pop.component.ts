@@ -19,8 +19,8 @@ import { IInsight } from '../../models/models';
 })
 export class InsightCreationPopComponent implements OnInit {
   @Input() lat_long!: {
-    latitude: number;
-    longitude: number;
+    latitude?: number;
+    longitude?: number;
   };
   @Input() isEdit = false;
   @Input() insight: IInsight|null = null;
@@ -46,11 +46,11 @@ export class InsightCreationPopComponent implements OnInit {
       external_link: [''],
       image: [''],
       latitude: [
-        { value: this.lat_long?.latitude, disabled: true },
+        { value: this.lat_long?.latitude ?? null, disabled: true },
         Validators.required,
       ],
       longitude: [
-        { value: this.lat_long?.longitude, disabled: true },
+        { value: this.lat_long?.longitude ?? null, disabled: true },
         Validators.required,
       ],
     });
