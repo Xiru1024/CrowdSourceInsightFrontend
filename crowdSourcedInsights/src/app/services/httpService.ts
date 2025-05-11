@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
-  private baseUrl = 'http://localhost/api';
+  private baseUrl = 'http://195.148.31.118/api';
    private headers=  new HttpHeaders({
         'Accept': 'application/vnd.mason+json',
         'Content-Type': 'application/json'
@@ -20,7 +20,6 @@ export class HttpService {
       responseType: 'json'
     });
   }
-
     createInsight(insightData: any): Observable<any> {
       const header = new HttpHeaders({
         'Accept': 'application/vnd.mason+json',
