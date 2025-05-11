@@ -114,4 +114,30 @@ export class HttpService {
       responseType: 'json'
     });
   }
+
+  deleteFeedback(creatorId: string, insightId: string, feedbackId: string): Observable<any> {
+    const header = new HttpHeaders({
+      'Accept': 'application/vnd.mason+json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+    });
+    return this.http.delete(this.baseUrl + '/users/' + creatorId + '/insights/' + insightId + '/feedbacks/' + feedbackId, {
+      headers: header,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+
+  updateFeedback(creatorId: string, insightId: string, feedbackId: string, feedbackData: any): Observable<any> {
+    const header = new HttpHeaders({
+      'Accept': 'application/vnd.mason+json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+    });
+    return this.http.put(this.baseUrl + '/users/' + creatorId + '/insights/' + insightId + '/feedbacks/' + feedbackId, feedbackData, {
+      headers: header,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
 }

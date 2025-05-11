@@ -16,6 +16,9 @@ import { FormsModule } from '@angular/forms';
 export class FeedbackComponent {
   public isPopupVisible: boolean = false;
   public feedbacks: any[] = [];
+  public loggedInUser: string = localStorage.getItem('username') as string;
+  public isEdit: boolean = false;
+  public currentFeedback: any = null;
   @Input() insight: any = null;
   constructor(
     private http: HttpService,
@@ -40,15 +43,19 @@ export class FeedbackComponent {
     });
   }
 
-  public openPopup() {
+  public openPopup(isEdit: boolean = false) {
+    this.isEdit = isEdit;
     this.isPopupVisible = true;
   }
 
   public closePopup(needUpdateList: boolean) {
+    this.currentFeedback = null;
     if(needUpdateList) {
       this.http.fetchFeedbacks(this.insight.user ,this.insight.id).subscribe({
         next: (response) => {
-         console.log("feedbacks",response);
+          this.feedbacks = (response.body.items || []).sort(
+            (a: any, b: any) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
+          );
         },
         error: (error) => {
           this.messageService.add({
@@ -61,4 +68,34 @@ export class FeedbackComponent {
     }
     this.isPopupVisible = false;
   }
+
+  
+  editFeedback(fb: any) {
+    this.currentFeedback = fb;
+    this.isPopupVisible = true;
+    this.isEdit = true;
+    this.openPopup(true);
+  }
+
+  deleteFeedback(fb: any) {
+    this.http.deleteFeedback(fb.user,fb.insight,fb.id).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Feedback deleted successfully',
+        });
+        this.feedbacks = this.feedbacks.filter((feedback) => feedback.id !== fb.id);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete feedback',
+        });
+      },
+    });
+  }
+
+
 }

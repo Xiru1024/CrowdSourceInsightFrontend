@@ -19,7 +19,9 @@ import { RatingModule } from 'primeng/rating';
 })
 export class FeedbackpopUpComponent {
   public feedbackForm!: FormGroup;
-  @Input() insight: any= null;
+  @Input() insight: any = null;
+  @Input() currentFeedback: any;
+  @Input() isEdit: boolean = false;
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
   constructor(
     private fb: FormBuilder,
@@ -32,6 +34,10 @@ export class FeedbackpopUpComponent {
       comment: [''],
       rating: [null, Validators.required],
     });
+
+    if (this.isEdit) {
+      this.feedbackForm.patchValue(this.currentFeedback);
+    }
   }
   hideDialog(ifCreated = false) {
     this.onClose.emit(ifCreated);
@@ -39,32 +45,58 @@ export class FeedbackpopUpComponent {
 
   saveFeedback() {
     if (this.feedbackForm.valid) {
-      const feedbackData =  this.feedbackForm.getRawValue();
-   
-      this.http
-        .addFeedback(
-          this.insight.id,
-          localStorage.getItem('username') as any,
-          feedbackData
-        )
-        .subscribe({
-          next: (response) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Feedback submitted successfully',
-            });
-            this.hideDialog(true);
-          },
-          error: (error) => {
-            console.error('Error submitting feedback:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to submit feedback',
-            });
-          },
-        });
+      const feedbackData = this.feedbackForm.getRawValue();
+      if (this.isEdit) {
+        this.http
+          .updateFeedback(
+            this.currentFeedback.user,
+            this.currentFeedback.insight,
+            this.currentFeedback.id,
+            feedbackData
+          )
+          .subscribe({
+            next: (response) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Feedback updated successfully',
+              });
+              this.onClose.emit(true);
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to update feedback',
+              });
+            },
+          });
+      } else {
+        this.http
+          .addFeedback(
+            this.insight.id,
+            localStorage.getItem('username') as any,
+            feedbackData
+          )
+          .subscribe({
+            next: (response) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Feedback submitted successfully',
+              });
+              this.hideDialog(true);
+            },
+            error: (error) => {
+              console.error('Error submitting feedback:', error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to submit feedback',
+              });
+            },
+          });
+      }
     }
   }
 }
