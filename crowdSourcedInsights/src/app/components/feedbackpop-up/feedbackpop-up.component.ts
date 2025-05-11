@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import {
@@ -10,6 +10,7 @@ import {
 import { HttpService } from '../../services/httpService';
 import { MessageService } from 'primeng/api';
 import { RatingModule } from 'primeng/rating';
+import { IFeedback, IInsight } from '../../models/models';
 
 @Component({
   selector: 'app-feedbackpop-up',
@@ -17,12 +18,12 @@ import { RatingModule } from 'primeng/rating';
   templateUrl: './feedbackpop-up.component.html',
   styleUrl: './feedbackpop-up.component.scss',
 })
-export class FeedbackpopUpComponent {
+export class FeedbackpopUpComponent implements OnInit {
   public feedbackForm!: FormGroup;
-  @Input() insight: any = null;
-  @Input() currentFeedback: any;
-  @Input() isEdit: boolean = false;
-  @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
+  @Input() insight: IInsight|null = null;
+  @Input() currentFeedback: IFeedback | null = null;
+  @Input() isEdit = false;
+  @Output() closeFeedback: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(
     private fb: FormBuilder,
     private http: HttpService,
@@ -36,11 +37,11 @@ export class FeedbackpopUpComponent {
     });
 
     if (this.isEdit) {
-      this.feedbackForm.patchValue(this.currentFeedback);
+      this.feedbackForm.patchValue(this.currentFeedback??{});
     }
   }
   hideDialog(ifCreated = false) {
-    this.onClose.emit(ifCreated);
+    this.closeFeedback.emit(ifCreated);
   }
 
   saveFeedback() {
@@ -49,37 +50,37 @@ export class FeedbackpopUpComponent {
       if (this.isEdit) {
         this.http
           .updateFeedback(
-            this.currentFeedback.user,
-            this.currentFeedback.insight,
-            this.currentFeedback.id,
+            this.currentFeedback?.user||"",
+            this.currentFeedback?.insight||"",
+            this.currentFeedback?.id||"",
             feedbackData
           )
           .subscribe({
-            next: (response) => {
+            next: () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: 'Feedback updated successfully',
               });
-              this.onClose.emit(true);
+              this.closeFeedback.emit(true);
             },
             error: (error) => {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Failed to update feedback',
+                detail: error.message,
               });
             },
           });
       } else {
         this.http
           .addFeedback(
-            this.insight.id,
-            localStorage.getItem('username') as any,
+            this.insight?.id||"",
+            localStorage.getItem('username') as string,
             feedbackData
           )
           .subscribe({
-            next: (response) => {
+            next: () => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
@@ -92,7 +93,7 @@ export class FeedbackpopUpComponent {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Failed to submit feedback',
+                detail: error.message,
               });
             },
           });

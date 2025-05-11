@@ -1,7 +1,8 @@
 // src/app/services/user.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { IFeedback, IGeneral, IInsight, IUser } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
@@ -13,27 +14,27 @@ export class HttpService {
 
   constructor(private http: HttpClient) {}
 
-  createUser(userData: any): Observable<any> {
+  createUser(userData: IUser): Observable<HttpResponse<IGeneral>> {
     return this.http.post(this.baseUrl+'/users/', userData,   {
       headers: this.headers,
       observe: 'response',  
       responseType: 'json'
     });
   }
-    createInsight(insightData: any): Observable<any> {
+    createInsight(insightData: IInsight): Observable<HttpResponse<IGeneral>> {
       const header = new HttpHeaders({
         'Accept': 'application/vnd.mason+json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem('api_key')
       });
-    return this.http.post(this.baseUrl+ "/users/"+insightData.user + '/insights/', insightData,   {
+    return this.http.post(this.baseUrl+ "/users/"+insightData["user"] + '/insights/', insightData,   {
       headers: header,
       observe: 'response',  
       responseType: 'json'
     });
   }
 
-  updateInsight(insightData: any): Observable<any> {
+  updateInsight(insightData: IInsight): Observable<HttpResponse<IGeneral>> {
     const header = new HttpHeaders({
       'Accept': 'application/vnd.mason+json',
       'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ export class HttpService {
   
 
 
-  getInsights(params: { bbox?: string; usr?: string; ic?: string; isc?: string }): Observable<any> {
+  getInsights(params: { bbox?: string; usr?: string; ic?: string; isc?: string }): Observable<HttpResponse<IGeneral>> {
   
   let httpParams = new HttpParams();
 
@@ -65,7 +66,7 @@ export class HttpService {
   });
   }
 
-  getInsightDetail(insightId: string): Observable<any> {
+  getInsightDetail(insightId: string): Observable<HttpResponse<IGeneral>> {
     return this.http.get(this.baseUrl + '/insights/' + insightId, {
       headers: this.headers,
       observe: 'response',
@@ -73,7 +74,7 @@ export class HttpService {
     });
   }
 
-  deleteInsight(userId: string, insightId: string): Observable<any> {
+  deleteInsight(userId: string, insightId: string): Observable<HttpResponse<IGeneral>> {
        const header = new HttpHeaders({
         'Accept': 'application/vnd.mason+json',
         'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ export class HttpService {
     });
   }
 
-  addFeedback(insightId: string, userId: string,  feedbackData: any): Observable<any> {
+  addFeedback(insightId: string, userId: string,  feedbackData: IFeedback): Observable<HttpResponse<IGeneral>> {
 
     const header = new HttpHeaders({
       'Accept': 'application/vnd.mason+json',
@@ -101,7 +102,7 @@ export class HttpService {
   }
 
 
-  fetchFeedbacks(creatorId: string, insightId: string): Observable<any> {
+  fetchFeedbacks(creatorId: string, insightId: string): Observable<HttpResponse<IGeneral>> {
     const header = new HttpHeaders({
       'Accept': 'application/vnd.mason+json',
       'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export class HttpService {
     });
   }
 
-  deleteFeedback(creatorId: string, insightId: string, feedbackId: string): Observable<any> {
+  deleteFeedback(creatorId: string, insightId: string, feedbackId: string): Observable<HttpResponse<IGeneral>> {
     const header = new HttpHeaders({
       'Accept': 'application/vnd.mason+json',
       'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ export class HttpService {
     });
   }
 
-  updateFeedback(creatorId: string, insightId: string, feedbackId: string, feedbackData: any): Observable<any> {
+  updateFeedback(creatorId: string, insightId: string, feedbackId: string, feedbackData: IFeedback): Observable<HttpResponse<IGeneral>> {
     const header = new HttpHeaders({
       'Accept': 'application/vnd.mason+json',
       'Content-Type': 'application/json',

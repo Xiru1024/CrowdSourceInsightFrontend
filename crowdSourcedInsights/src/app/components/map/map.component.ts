@@ -3,18 +3,18 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  OnInit,
   Renderer2,
 } from '@angular/core';
 import * as L from 'leaflet';
 import { DrawerModule } from 'primeng/drawer';
-import { Browser, Map, map, tileLayer } from 'leaflet';
+import { Browser, Icon, LeafletMouseEvent, Map, map, tileLayer, TileLayerOptions } from 'leaflet';
 import { InsightCreationPopComponent } from '../insight-creation-pop/insight-creation-pop.component';
 import { CommonModule } from '@angular/common';
 import { HttpService } from '../../services/httpService';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InsightDetailComponent } from '../insight-detail/insight-detail.component';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { IInsight } from '../../models/models';
 
 @Component({
   selector: 'app-map',
@@ -28,8 +28,8 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
-export class MapComponent implements OnInit, AfterViewInit {
-  public sidePananelVisible: boolean = false;
+export class MapComponent implements AfterViewInit {
+  public sidePananelVisible = false;
 
   @ViewChild('map')
   private mapContainer!: ElementRef<HTMLElement>;
@@ -39,12 +39,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   public showAction = false;
 
   private leafletMap!: Map;
-  public dialogVisible: boolean = false;
-  public lat_long: any = {};
-  public mapBounds: any = {};
-  public customIcon: any;
-  public currentInsight: any = null;
-  public isEdit: boolean = false;
+  public dialogVisible = false;
+  public lat_long: {
+    latitude?: number;
+    longitude?: number;
+  } = {};
+  public mapBounds = '';
+  public customIcon!: Icon;
+  public currentInsight: IInsight | null = null;
+  public isEdit = false;
 
   constructor(
     private renderer: Renderer2,
@@ -53,7 +56,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     private confirmationService: ConfirmationService
   ) {}
 
-  ngOnInit() {}
 
   ngAfterViewInit() {
     const initialState = { lng: 11, lat: 49, zoom: 4 };
@@ -76,8 +78,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       maxZoom: 20,
       minZoom: 3,
       id: 'osm-bright',
-    } as any).addTo(this.leafletMap);
-    this.leafletMap.on('contextmenu', (event: any) =>
+    } as TileLayerOptions).addTo(this.leafletMap);
+    this.leafletMap.on('contextmenu', (event: LeafletMouseEvent) =>
       this.showContextMenu(event)
     );
 
@@ -101,7 +103,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   toggleDrawer() {
     this.sidePananelVisible = !this.sidePananelVisible;
   }
-  showContextMenu(event: any) {
+  showContextMenu(event: LeafletMouseEvent) {
     const { containerPoint, latlng } = event;
     this.lat_long = {
       latitude: latlng.lat,
@@ -125,7 +127,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.renderer.setStyle(this.contextMenu.nativeElement, 'display', 'none');
   }
 
-  onMenuItemClick(option: string) {
+  onMenuItemClick() {
     this.isEdit = false;
     this.hideContextMenu();
 
@@ -159,13 +161,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   getAllInsights() {
     this.http.getInsights({ bbox: this.mapBounds }).subscribe({
       next: (response) => {
-        this.updateMarkers(response.body?.items || []);
+        this.updateMarkers(response.body?.["items"] || []);
       },
       error: (error) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to fetch insights',
+          detail: error.message,
         });
       },
     });
@@ -178,11 +180,11 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  updateMarkers(insights: any[]) {
+  updateMarkers(insights: IInsight[]) {
     this.markers.forEach((marker) => this.leafletMap.removeLayer(marker));
     this.markers = [];
     if (this.leafletMap) {
-      insights.forEach((insight: any) => {
+      insights.forEach((insight: IInsight) => {
         const popupContent = `
         <div>
           <strong>${insight.title}</strong><br>
@@ -190,7 +192,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         </div>
       `;
 
-        const marker = L.marker([insight.latitude, insight.longitude], {
+        const marker = L.marker([insight.latitude??0, insight.longitude??0], {
           icon: this.customIcon,
         }).addTo(this.leafletMap);
         marker.bindPopup(popupContent);
@@ -206,14 +208,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  showInsightDetail(insight: any) {
+  showInsightDetail(insight: IInsight) {
     this.showAction =
       localStorage.getItem('username') == insight?.user;
     this.currentInsight = insight;
     this.sidePananelVisible = true;
   }
 
-  deleteInsight(event: any) {
+  deleteInsight(event: MouseEvent) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Are you sure you want to DELETE?',
@@ -235,12 +237,12 @@ export class MapComponent implements OnInit, AfterViewInit {
     if (this.currentInsight) {
       this.http
         .deleteInsight(
-          localStorage.getItem('username') as any,
-          this.currentInsight.id
+          localStorage.getItem('username') as string,
+          this.currentInsight.id??''
         )
         .subscribe({
           next: () => {
-            this.currentInsight = null;
+            this.currentInsight = {};
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
@@ -253,7 +255,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete insight',
+              detail: error.message,
             });
           },
         });

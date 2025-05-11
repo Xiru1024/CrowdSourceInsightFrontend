@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { HttpService } from '../../services/httpService';
 import { MessageService } from 'primeng/api';
+import { IInsight } from '../../models/models';
 
 @Component({
   selector: 'app-insight-creation-pop',
@@ -16,13 +17,16 @@ import { MessageService } from 'primeng/api';
   templateUrl: './insight-creation-pop.component.html',
   styleUrl: './insight-creation-pop.component.scss',
 })
-export class InsightCreationPopComponent {
-  @Input() lat_long: any;
-  @Input() isEdit: boolean = false;
-  @Input() insight: any = null;
-  @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
+export class InsightCreationPopComponent implements OnInit {
+  @Input() lat_long!: {
+    latitude: number;
+    longitude: number;
+  };
+  @Input() isEdit = false;
+  @Input() insight: IInsight|null = null;
+  @Output() panelClose: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public dialogData: any = {};
+  public dialogData: IInsight = {};
 
   public insightForm!: FormGroup;
   constructor(
@@ -53,9 +57,9 @@ export class InsightCreationPopComponent {
     console.log('isEdit: ', this.isEdit);
 
     if (this.isEdit) {
-      this.http.getInsightDetail(this.insight?.id).subscribe({
+      this.http.getInsightDetail(this.insight?.id??"").subscribe({
         next: (response) => {
-          this.dialogData = response.body;
+          this.dialogData = response.body as IInsight;
           this.insightForm.patchValue({
             title: this.dialogData.title,
             address: this.dialogData.address,
@@ -75,7 +79,7 @@ export class InsightCreationPopComponent {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to fetch insight data',
+            detail: error.message,
           });
           console.error('Error fetching insight:', error);
         },
@@ -84,7 +88,7 @@ export class InsightCreationPopComponent {
   }
 
   hideDialog(ifCreated = false) {
-    this.onClose.emit(ifCreated);
+    this.panelClose.emit(ifCreated);
   }
 
   saveInsight() {
@@ -98,14 +102,12 @@ export class InsightCreationPopComponent {
     if (this.insightForm.valid) {
       if (this.isEdit) {
         this.http.updateInsight(payload).subscribe({
-          next: (response) => {
+          next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Updated successfully',
             });
-            console.log('response: ', response);
-            this.dialogData = response;
             this.insightForm.reset();
             this.hideDialog(true);
           },
@@ -113,7 +115,7 @@ export class InsightCreationPopComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Update failed',
+              detail: error.message,
             });
             console.error('Error updating insight:', error);
             this.dialogData = error;
@@ -121,14 +123,12 @@ export class InsightCreationPopComponent {
         });
       } else {
         this.http.createInsight(payload).subscribe({
-          next: (response) => {
+          next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Saved successfully',
             });
-            console.log('response: ', response);
-            this.dialogData = response;
             this.insightForm.reset();
             this.hideDialog(true);
           },
@@ -136,7 +136,7 @@ export class InsightCreationPopComponent {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Save failed',
+              detail: error.message,
             });
             console.error('Error creating insight:', error);
             this.dialogData = error;

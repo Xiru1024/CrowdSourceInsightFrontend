@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpService } from '../../services/httpService';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 
@@ -38,14 +37,14 @@ public onSubmit() {
           console.log("response: ",response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
 
-           localStorage.setItem('api_key', response.body.api_key);
+           localStorage.setItem('api_key', response?.body?.["api_key"]);
            localStorage.setItem('username', this.loginForm.get('username')?.value);
            this.router.navigate(['/map']);
 
         },
         error: (error) => {
           console.error('Error registering user:', error);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Save failed'});
+        this.messageService.add({ severity: 'error', summary: 'Error', detail:error.message });
 
         }
     })
