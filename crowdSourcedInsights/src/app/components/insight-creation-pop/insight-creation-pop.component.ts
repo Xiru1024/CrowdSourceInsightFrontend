@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
-import { CommonModule } from '@angular/common'; 
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { HttpService } from '../../services/httpService';
 import { MessageService } from 'primeng/api';
 
@@ -9,19 +14,21 @@ import { MessageService } from 'primeng/api';
   selector: 'app-insight-creation-pop',
   imports: [DialogModule, CommonModule, ReactiveFormsModule],
   templateUrl: './insight-creation-pop.component.html',
-  styleUrl: './insight-creation-pop.component.scss'
+  styleUrl: './insight-creation-pop.component.scss',
 })
 export class InsightCreationPopComponent {
-
   @Input() lat_long: any;
+  @Input() isEdit: boolean = false;
+  @Input() insight: any = null;
   @Output() onClose: EventEmitter<any> = new EventEmitter<any>();
 
-  public dialogData: any = {}; 
+  public dialogData: any = {};
 
   public insightForm!: FormGroup;
-  constructor(private fb: FormBuilder,
-      private http: HttpService, 
-      private messageService: MessageService,
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -34,42 +41,110 @@ export class InsightCreationPopComponent {
       description: [''],
       external_link: [''],
       image: [''],
-      latitude: [{ value: this.lat_long?.latitude, disabled: true }, Validators.required],
-      longitude: [{ value: this.lat_long?.longitude, disabled: true }, Validators.required], 
+      latitude: [
+        { value: this.lat_long?.latitude, disabled: true },
+        Validators.required,
+      ],
+      longitude: [
+        { value: this.lat_long?.longitude, disabled: true },
+        Validators.required,
+      ],
     });
+    console.log('isEdit: ', this.isEdit);
+
+    if (this.isEdit) {
+      this.http.getInsightDetail(this.insight?.id).subscribe({
+        next: (response) => {
+          this.dialogData = response.body;
+          this.insightForm.patchValue({
+            title: this.dialogData.title,
+            address: this.dialogData.address,
+            category: this.dialogData.category,
+            subcategory: this.dialogData.subcategory,
+            description: this.dialogData.description,
+            external_link: this.dialogData.external_link,
+            image: this.dialogData.image,
+            latitude: this.dialogData.latitude,
+            longitude: this.dialogData.longitude,
+          });
+          this.insightForm.markAsPristine();
+          this.insightForm.markAsUntouched();
+          this.insightForm.updateValueAndValidity();
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to fetch insight data',
+          });
+          console.error('Error fetching insight:', error);
+        },
+      });
+    }
   }
 
-
-
-  hideDialog(ifCreated= false) {
+  hideDialog(ifCreated = false) {
     this.onClose.emit(ifCreated);
   }
 
   saveInsight() {
-   if (this.insightForm.valid) {
-      console.log('Form Data:', this.insightForm.getRawValue()); 
-      const payload = {
-        ...this.insightForm.getRawValue(),
-        user: localStorage.getItem('username'),
-      }
-      this.http.createInsight(payload).subscribe({
-        next: (response) => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully' });
-          console.log("response: ",response);
-          this.dialogData = response;
-          this.insightForm.reset();
-          this.hideDialog(true);
-        }
-        , error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Save failed'});
-          console.error('Error creating insight:', error);
-          this.dialogData = error;
-        }
-      });
+    console.log('Form Data:', this.insightForm.getRawValue());
+    const payload = {
+      ...this.insightForm.getRawValue(),
+      id: this.insight?.id,
+      user: localStorage.getItem('username'),
+    };
 
+    if (this.insightForm.valid) {
+      if (this.isEdit) {
+        this.http.updateInsight(payload).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Updated successfully',
+            });
+            console.log('response: ', response);
+            this.dialogData = response;
+            this.insightForm.reset();
+            this.hideDialog(true);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Update failed',
+            });
+            console.error('Error updating insight:', error);
+            this.dialogData = error;
+          },
+        });
+      } else {
+        this.http.createInsight(payload).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Saved successfully',
+            });
+            console.log('response: ', response);
+            this.dialogData = response;
+            this.insightForm.reset();
+            this.hideDialog(true);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Save failed',
+            });
+            console.error('Error creating insight:', error);
+            this.dialogData = error;
+          },
+        });
+      }
     } else {
       this.insightForm.markAllAsTouched();
     }
   }
-
 }

@@ -34,6 +34,20 @@ export class HttpService {
     });
   }
 
+  updateInsight(insightData: any): Observable<any> {
+    const header = new HttpHeaders({
+      'Accept': 'application/vnd.mason+json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+    });
+    return this.http.put(this.baseUrl + '/users/' + insightData.user + '/insights/' + insightData.id, insightData, {
+      headers: header,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+  
+
 
   getInsights(params: { bbox?: string; usr?: string; ic?: string; isc?: string }): Observable<any> {
   
@@ -55,6 +69,19 @@ export class HttpService {
   getInsightDetail(insightId: string): Observable<any> {
     return this.http.get(this.baseUrl + '/insights/' + insightId, {
       headers: this.headers,
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+
+  deleteInsight(userId: string, insightId: string): Observable<any> {
+       const header = new HttpHeaders({
+        'Accept': 'application/vnd.mason+json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('api_key')
+      });
+    return this.http.delete(this.baseUrl + '/users/' + userId + '/insights/' + insightId, {
+      headers: header,
       observe: 'response',
       responseType: 'json'
     });

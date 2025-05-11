@@ -12,9 +12,9 @@
       <ng-template #header>
         <div *ngIf="currentInsight" class="d-flex justify-content-between w-100">
           <div class="font-bold ">{{ currentInsight?.title }}</div>
-          <div class="action-group">
-              <div class="pi pi-pen-to-square"></div>
-              <div class="pi pi-trash"></div>
+          <div *ngIf="showAction" class="action-group d-flex justify-content-between">
+              <div class="pi pi-pen-to-square cursor-pointer" title="edit" (click)="openEditInsight()"></div>
+              <div class="pi pi-trash cursor-pointer" title="delete" (click)="deleteInsight($event)"></div>
           </div>
         
         </div>
@@ -40,6 +40,10 @@
 
 <app-insight-creation-pop
   *ngIf="dialogVisible"
+  [isEdit]="isEdit"
+  [insight]="currentInsight"
   [lat_long]="lat_long"
   (onClose)="handleClosePopup($event)"
 ></app-insight-creation-pop>
+
+<p-confirmpopup />

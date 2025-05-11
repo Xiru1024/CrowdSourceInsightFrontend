@@ -12,12 +12,19 @@ import { Browser, Map, map, tileLayer } from 'leaflet';
 import { InsightCreationPopComponent } from '../insight-creation-pop/insight-creation-pop.component';
 import { CommonModule } from '@angular/common';
 import { HttpService } from '../../services/httpService';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { InsightDetailComponent } from '../insight-detail/insight-detail.component';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @Component({
   selector: 'app-map',
-  imports: [DrawerModule, InsightCreationPopComponent, CommonModule, InsightDetailComponent],
+  imports: [
+    DrawerModule,
+    InsightCreationPopComponent,
+    CommonModule,
+    InsightDetailComponent,
+    ConfirmPopupModule,
+  ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
@@ -29,6 +36,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('contextMenu')
   private contextMenu!: ElementRef<HTMLElement>;
   private markers: L.Marker[] = [];
+  public showAction = false;
 
   private leafletMap!: Map;
   public dialogVisible: boolean = false;
@@ -36,11 +44,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   public mapBounds: any = {};
   public customIcon: any;
   public currentInsight: any = null;
+  public isEdit: boolean = false;
 
   constructor(
     private renderer: Renderer2,
     private http: HttpService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {}
@@ -116,6 +126,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   onMenuItemClick(option: string) {
+    this.isEdit = false;
     this.hideContextMenu();
 
     this.showDialog();
@@ -172,7 +183,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.markers = [];
     if (this.leafletMap) {
       insights.forEach((insight: any) => {
-
         const popupContent = `
         <div>
           <strong>${insight.title}</strong><br>
@@ -185,20 +195,80 @@ export class MapComponent implements OnInit, AfterViewInit {
         }).addTo(this.leafletMap);
         marker.bindPopup(popupContent);
 
-
         marker.on('popupopen', () => {
-        const btn = document.getElementById(`show-detail-${insight.id}`);
-        if (btn) {
-          btn.onclick = () => this.showInsightDetail(insight);
-        }
-      });
-
+          const btn = document.getElementById(`show-detail-${insight.id}`);
+          if (btn) {
+            btn.onclick = () => this.showInsightDetail(insight);
+          }
+        });
+        this.markers.push(marker);
       });
     }
   }
 
   showInsightDetail(insight: any) {
+    this.showAction =
+      localStorage.getItem('username') == insight?.user;
     this.currentInsight = insight;
     this.sidePananelVisible = true;
+  }
+
+  deleteInsight(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure you want to DELETE?',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Yes',
+      },
+      accept: () => {
+        this.handleDelete();
+      },
+    });
+  }
+  handleDelete() {
+    if (this.currentInsight) {
+      this.http
+        .deleteInsight(
+          localStorage.getItem('username') as any,
+          this.currentInsight.id
+        )
+        .subscribe({
+          next: () => {
+            this.currentInsight = null;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Insight deleted successfully',
+            });
+            this.sidePananelVisible = false;
+            this.getAllInsights();
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to delete insight',
+            });
+          },
+        });
+    }
+  }
+
+  openEditInsight() {
+    if (this.currentInsight) {
+      this.isEdit = true;
+      this.lat_long = {
+        latitude: this.currentInsight.latitude,
+        longitude: this.currentInsight.longitude,
+      };
+      this.sidePananelVisible = false;
+      this.dialogVisible = true;
+    }
   }
 }
