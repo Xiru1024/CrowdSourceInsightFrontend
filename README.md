@@ -1,6 +1,6 @@
 # CrowdSourceInsightFrontend
 
-This project is yje front end for crowdSourcedInsight api. Users can register, add insights with geolocation, view details, and provide feedback or ratings for each insight.
+This project is the front end for crowdSourcedInsight api. Users can register, add insights with geolocation, view details, and provide feedback or ratings for each insight.
 
 ## Features
 
