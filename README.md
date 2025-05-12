@@ -20,6 +20,11 @@ This project is the front end for crowdSourcedInsight api. Users can register, a
 - **Leaflet** (interactive maps)
 - **TypeScript**
 
+## Quality Assurance
+
+- This project uses **ESLint** to ensure code quality.  
+  Run `npm eslint .` to check for linting issues.
+
 ## Getting Started
 
 ### Prerequisites
