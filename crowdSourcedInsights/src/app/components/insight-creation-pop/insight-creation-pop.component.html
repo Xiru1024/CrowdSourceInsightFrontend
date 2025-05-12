@@ -1,6 +1,6 @@
 <p-dialog
   [visible]="true"
-  header="Create Insight"
+  [header]="isEdit ? 'Edit Insight' : 'Create Insight'"
   [modal]="true"
   [closable]="false"
   (onHide)="hideDialog()"
