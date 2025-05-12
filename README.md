@@ -61,3 +61,6 @@ This project is the front end for crowdSourcedInsight api. Users can register, a
 - `src/app/components/` - Angular components (map, login, insight detail, feedback, etc.)
 - `src/app/services/` - HTTP services, all the requests to api write here
 - `src/styles.scss` - Global styles and theme overrides
+
+## Others
+Code for initialize the leaflet map refered to this resource: https://www.geoapify.com/tutorial/angular-leaflet-mapbox-maplibre-openlayers/#angular-leaflet
